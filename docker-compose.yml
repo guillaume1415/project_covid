@@ -1,0 +1,35 @@
+version: '3'
+
+volumes:
+    logs:
+        driver: local
+
+services:
+    slim:   
+        image: web
+        build: .
+        working_dir: /var/www
+        command: php -S 0.0.0.0:8080 -t public
+        environment:
+            docker: "true"
+        ports:
+            - 8080:8080
+        volumes:
+            - .:/var/www
+            - logs:/var/www/logs
+    db: 
+        image: mysql
+        environment: 
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: projet_covid
+            MYSQL_USER: user
+            MYSQL_PASSWORD: user
+    phpmyadmin:
+        image: phpmyadmin
+        ports:
+            - 8081:80
+    composer:
+        image: composer
+        working_dir: /var/www
+        volumes:
+            - .:/var/www
