@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use App\Application\Actions\User\GeolocalisationUserAction;
 use App\Application\Actions\User\ListUsersAction;
 use App\Application\Actions\User\ViewUserAction;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -21,6 +22,7 @@ use Slim\Views\Twig;
 return function (App $app) {
 
     $app->get('/', HomeAction::class);
+    $app->post('/', HomeAction::class);
     
     $app->get('/home ', function (Request $request, Response $response) {
         $response->getBody()->write('home');
@@ -31,6 +33,9 @@ return function (App $app) {
     // $app->post('/inscription', RegisterUserAction::class);
     $app->get('/inscription', RegisterUserAction::class);
     $app->post('/inscription', RegisterUserAction::class);
+
+    $app->get('/localisation', GeolocalisationUserAction::class);
+    $app->post('/localisation', GeolocalisationUserAction::class);
 
     // $app->get('/connexion', ShowLoginUserAction::class);
     // $app->post('/connexion', LoginUserAction::class );

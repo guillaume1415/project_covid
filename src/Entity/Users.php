@@ -1,115 +1,125 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Entity;
-
-
-use Doctrine\ORM\EntityManager;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
-use Psr\Log\LoggerInterface;
-use Slim\Views\Twig;
 
 /**
+ * Users
  *
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_1483A5E9E9A52300", columns={"geolocalisation_user_id"})})
  * @ORM\Entity
- * @ORM\Table(name="users")
  */
 class Users
 {
-
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
      * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=32, nullable=false)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=32)
      * @var string
+     *
+     * @ORM\Column(name="first_name", type="string", length=32, nullable=false)
      */
-    private $first_name;
+    private $firstName;
 
     /**
-     * @ORM\Column(type="string", length=45)
      * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=45, nullable=false)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=500)
      * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=500, nullable=false)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="datetime")
-     * @var DateTime
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_at", type="datetime", nullable=false)
      */
-    private $date_at;
+    private $dateAt;
 
     /**
-     * @ORM\Column(type="date",nullable=true)
-     * @var date
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_birthday", type="date", nullable=false)
      */
-    private $date_birthday;
+    private $dateBirthday;
 
     /**
-     * @ORM\Column(type="boolean",nullable=true,options={"default":false})
-     * @var bool
+     * @var bool|null
+     *
+     * @ORM\Column(name="cas_contact", type="boolean", nullable=true)
      */
-    private $cas_contact;
+    private $casContact = '0';
 
     /**
-     * @ORM\Column(type="boolean",nullable=true,options={"default":false})
-     * @var bool
+     * @var bool|null
+     *
+     * @ORM\Column(name="covid_plus", type="boolean", nullable=true)
      */
-    private $covid_plus;
+    private $covidPlus = '0';
 
     /**
-     * @ORM\OneToOne(targetEntity=Geolocalisation::class, cascade={"persist", "remove"},nullable=true)
+     * @var \Geolocalisation
+     *
+     * @ORM\ManyToOne(targetEntity="Geolocalisation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="geolocalisation_user_id", referencedColumnName="id")
+     * })
      */
-    private $geolocalisation_user;
+    private $geolocalisationUser;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Messaging::class, inversedBy="users")
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Messaging", inversedBy="users")
+     * @ORM\JoinTable(name="users_messaging",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="users_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="messaging_id", referencedColumnName="id")
+     *   }
+     * )
      */
     private $messaging;
 
-    public function __construct(EntityManager $em)
-    {
-        $this->messaging = new ArrayCollection();
-        $this->em = $em;
-//        $this->date_birthday = new \DateTime();
-    }
 
+
+    /**
+     * Constructor
+     */
+    public function __construct(EntityManager $em )
+    {
+        $this->messaging = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->em = $em;
+//        $this->setGeolocalisationUser = $geolocalisationUser;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -126,12 +136,24 @@ class Users
 
     public function getFirstName(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    public function setFirstName(string $first_name): self
+    public function setFirstName(string $firstName): self
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }
@@ -148,74 +170,75 @@ class Users
         return $this;
     }
 
-    public function getDateBirthday()
+    public function getDateAt(): ?\DateTimeInterface
     {
-        return $this->date_birthday;
+        return $this->dateAt;
     }
 
-    public function setDateBirthday(\DateTimeInterface $date_birthday): self
+    public function setDateAt(\DateTimeInterface $dateAt): self
     {
-        $this->date_birthday = $date_birthday;
+        $this->dateAt = $dateAt;
 
         return $this;
     }
 
-    public function getDateAt()
+    public function getDateBirthday(): ?\DateTimeInterface
     {
-        return $this->date_at;
+        return $this->dateBirthday;
     }
 
-    public function setDateAt(\DateTimeInterface $date_at): self
+    public function setDateBirthday(\DateTimeInterface $dateBirthday): self
     {
-        $this->date_at = $date_at;
+        $this->dateBirthday = $dateBirthday;
 
         return $this;
     }
 
-    public function getCovidMore()
+    public function getCasContact(): ?bool
     {
-        return $this->covid_more;
+        return $this->casContact;
     }
 
-    public function setCovidMore($covid_more): self
+    public function setCasContact(?bool $casContact): self
     {
-        $this->covid_more = $covid_more;
-        return $this;
-    }
-
-    public function getCasContact()
-    {
-        return $this->cas_contact;
-    }
-
-    public function setCasContact($cas_contact): self
-    {
-        $this->cas_contact = $cas_contact;
+        $this->casContact = $casContact;
 
         return $this;
     }
 
-    public function getGeolocalisationUser(): ?geolocalisation
+    public function getCovidPlus(): ?bool
     {
-        return $this->geolocalisation_user;
+        return $this->covidPlus;
     }
 
-    public function setGeolocalisationUser(?geolocalisation $geolocalisation_user): self
+    public function setCovidPlus(?bool $covidPlus): self
     {
-        $this->geolocalisation_user = $geolocalisation_user;
+        $this->covidPlus = $covidPlus;
+
+        return $this;
+    }
+
+    public function getGeolocalisationUser(): ?Geolocalisation
+    {
+        return $this->geolocalisationUser;
+    }
+
+    public function setGeolocalisationUser(?Geolocalisation $geolocalisationUser): self
+    {
+        $this->geolocalisationUser = $geolocalisationUser;
 
         return $this;
     }
 
     /**
-     * @return Collection|messaging[]
+     * @return Collection|Messaging[]
      */
     public function getMessaging(): Collection
     {
         return $this->messaging;
     }
 
-    public function addMessaging(messaging $messaging): self
+    public function addMessaging(Messaging $messaging): self
     {
         if (!$this->messaging->contains($messaging)) {
             $this->messaging[] = $messaging;
@@ -224,11 +247,34 @@ class Users
         return $this;
     }
 
-    public function removeMessaging(messaging $messaging): self
+    public function removeMessaging(Messaging $messaging): self
     {
-        if ($this->messaging->contains($messaging)) {
-            $this->messaging->removeElement($messaging);
-        }
+        $this->messaging->removeElement($messaging);
+
+        return $this;
+    }
+
+    /** test geo */
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(float $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(float $longitude): self
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }
@@ -250,6 +296,8 @@ class Users
      * Insert user resgiter
      */
     public function insertUser($name, $first_name, $email, $password,$birth_day){
+//        $loca = $this->em->findBy(array(),array('id'=>'DESC'),1,0);
+//        $loca = $this->em->find(Geolocalisation::class, 3);
         $passwordHash = $this->hashPassword($password);
         $this->setEmail($email);
         $this->setPassword($password);
@@ -257,6 +305,7 @@ class Users
         $this->setDateBirthday( new \DateTime($birth_day));
         $this->setDateAt( new \DateTime());
         $this->setName($name);
+//        $this->setGeolocalisationUser($loca);
 //        $this->setCasContact(1);
 //        $this->setCovidMore(1);
         $this->setPassword($passwordHash);
@@ -294,7 +343,7 @@ class Users
 
         if ($user && $this->passwordConfirm($password, $user)) {
 //            var_dump($user[0]["password"]) . "</br>";
-             $this->connect($user);
+            $this->connect($user);
             return $user;
         }
     }

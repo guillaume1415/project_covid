@@ -32,7 +32,8 @@
         "slim/slim": "^4.5",
         "slim/twig-view": "^3.0",
         "symfony/translation": "^5.1",
-        "symfony/twig-bridge": "^5.1"
+        "symfony/twig-bridge": "^5.1",
+        "vlucas/phpdotenv": "^5.3"
     },
     "require-dev": {
         "jangregor/phpstan-prophecy": "^0.8.0",

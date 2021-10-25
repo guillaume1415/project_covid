@@ -47,10 +47,10 @@ class LoginUserAction extends Action
             
             $user = $this->user->loginUser($email, $password);
             if ($user) {
-                var_dump("mot de pass okay");
+//                var_dump("mot de pass okay");
                 return $response->withHeader('Location', '/connexion')->withStatus(302);
 
-                 exit;
+//                 exit;
             } else {
                 var_dump("error connection");
                 return $response->withHeader('Location', '/connexion')->withStatus(302);

@@ -1,0 +1,28 @@
+
+{% extends "templates.twig" %}
+{% block title %}inscrition{% endblock %}
+{% block content %}
+    <div class="container mt-5 p-5 ">
+        <form action="" method="post">
+            <form>
+                <div class="container">
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label for="">Latitude</label>
+                            <input type="text" name="latitude" class="form-control" id="" placeholder="Latitude">
+                        </div>
+
+                        <div class="form-group col-4">
+                            <label for="">Longitude</label>
+                            <input type="text" name="longitude" class="form-control" id="" placeholder="longitude">
+                        </div>
+
+
+
+                    </div>
+                    <button type="submit" class="btn btn-primary justify-content-md-center">Submit</button>
+                </div>
+            </form>
+        </form>
+    </div>
+{% endblock %}

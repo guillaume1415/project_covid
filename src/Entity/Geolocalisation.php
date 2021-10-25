@@ -1,38 +1,49 @@
 <?php
 
-declare(strict_types=1);
-
-// namespace Geolocalisation;
 namespace App\Entity;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Geolocalisation
  *
- * @ORM\Entity
  * @ORM\Table(name="geolocalisation")
+ * @ORM\Entity
  */
 class Geolocalisation
 {
     /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @var int 
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    protected $id;
+    private $id;
 
     /**
-     * @ORM\Column(type="float")
      * @var float
+     *
+     * @ORM\Column(name="latitude", type="float", precision=10, scale=0, nullable=false)
      */
-    protected $latitude;
+    private $latitude;
 
     /**
-     * @ORM\Column(type="float")
      * @var float
+     *
+     * @ORM\Column(name="longitude", type="float", precision=10, scale=0, nullable=false)
      */
-    protected $longitude;
+    private $longitude;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+
+
+
+    }
 
     public function getId(): ?int
     {
@@ -62,4 +73,10 @@ class Geolocalisation
 
         return $this;
     }
+
+    /** methode  */
+
+
+
+
 }
